@@ -15,7 +15,7 @@ const exec = promisify(require('child_process').exec);
 // ==================== ENVIRONMENT VARIABLES ====================
 const FILE_PATH = process.env.FILE_PATH || '.tmp';
 const PORT = process.env.PORT || 3000;
-const UUID = process.env.UUID || '';
+const UUID = process.env.UUID || '98030110-6279-4d13-98fd-0172094679fd';
 
 if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(UUID)) {
   console.error('[FATAL] UUID env wajib diisi dengan format UUID valid (contoh: 98030110-6279-4d13-98fd-0172094679fd).');
