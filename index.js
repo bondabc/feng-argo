@@ -24,9 +24,9 @@ if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(UUID
 const ARGO_DOMAIN = process.env.ARGO_DOMAIN || '';
 const ARGO_AUTH = process.env.ARGO_AUTH || '';
 const ARGO_PORT = process.env.ARGO_PORT || 8001;
-const CFIP = process.env.CFIP || 'bug.com';
+const CFIP = process.env.CFIP || 'onesignal.com';
 const CFPORT = process.env.CFPORT || 443;
-const NAME = process.env.NAME || 'MEDIAFAIRY';
+const NAME = process.env.NAME || 'FENG';
 
 // ==================== GLOBAL CONSTANTS ====================
 const horse = Buffer.from("dHJvamFu", 'base64').toString(); 
