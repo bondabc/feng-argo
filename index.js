@@ -49,11 +49,11 @@ async function generateXrayConfig() {
   const config = {
     log: { access: '/dev/null', error: '/dev/null', loglevel: 'none' },
     inbounds: [
-      { port: ARGO_PORT, protocol: 'vless', settings: { clients: [{ id: UUID, flow: 'xtls-rprx-vision' }], decryption: 'none', fallbacks: [{ dest: 3001 }, { path: "/vless-mediafairy", dest: 3002 }, { path: "/vmess-mediafairy", dest: 3003 }, { path: "/trojan-mediafairy", dest: 3004 }] }, streamSettings: { network: 'tcp' } },
+      { port: ARGO_PORT, protocol: 'vless', settings: { clients: [{ id: UUID, flow: 'xtls-rprx-vision' }], decryption: 'none', fallbacks: [{ dest: 3001 }, { path: "/vless-fengwhuut", dest: 3002 }, { path: "/vmess-fengwhuut", dest: 3003 }, { path: "/trojan-fengwhuut", dest: 3004 }] }, streamSettings: { network: 'tcp' } },
       { port: 3001, listen: "127.0.0.1", protocol: "vless", settings: { clients: [{ id: UUID }], decryption: "none" }, streamSettings: { network: "tcp", security: "none" } },
-      { port: 3002, listen: "127.0.0.1", protocol: "vless", settings: { clients: [{ id: UUID, level: 0 }], decryption: "none" }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/vless-mediafairy" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } },
-      { port: 3003, listen: "127.0.0.1", protocol: "vmess", settings: { clients: [{ id: UUID, alterId: 0 }] }, streamSettings: { network: "ws", wsSettings: { path: "/vmess-mediafairy" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } },
-      { port: 3004, listen: "127.0.0.1", protocol: "trojan", settings: { clients: [{ password: UUID }] }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/trojan-mediafairy" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } },
+      { port: 3002, listen: "127.0.0.1", protocol: "vless", settings: { clients: [{ id: UUID, level: 0 }], decryption: "none" }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/vless-fengwhuut" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } },
+      { port: 3003, listen: "127.0.0.1", protocol: "vmess", settings: { clients: [{ id: UUID, alterId: 0 }] }, streamSettings: { network: "ws", wsSettings: { path: "/vmess-fengwhuut" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } },
+      { port: 3004, listen: "127.0.0.1", protocol: "trojan", settings: { clients: [{ password: UUID }] }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/trojan-fengwhuut" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } },
     ],
     dns: { servers: ["https+local://8.8.8.8/dns-query"] },
     outbounds: [{ protocol: "freedom", tag: "direct" }, { protocol: "blackhole", tag: "block" }]
@@ -125,11 +125,11 @@ async function extractDomains() {
 }
 
 async function generateLinks(domain) {
-  const vmessObj = { v: '2', ps: `${NAME}-CDN-VMESS`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'auto', net: 'ws', type: 'none', host: domain, path: '/vmess-mediafairy', tls: 'tls', sni: domain, alpn: '', fp: 'firefox' };
+  const vmessObj = { v: '2', ps: `${NAME}-CDN-VMESS`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'auto', net: 'ws', type: 'none', host: domain, path: '/vmess-fengwhuut', tls: 'tls', sni: domain, alpn: '', fp: 'firefox' };
   
-  argoConfigs.vless = `vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Fvless-mediafairy#${NAME}-CDN-VLESS`;
+  argoConfigs.vless = `vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Fvless-fengwhuut#${NAME}-CDN-VLESS`;
   argoConfigs.vmess = `vmess://${Buffer.from(JSON.stringify(vmessObj)).toString('base64')}`;
-  argoConfigs.trojan = `trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Ftrojan-mediafairy#${NAME}-CDN-TROJAN`;
+  argoConfigs.trojan = `trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${domain}&fp=firefox&type=ws&host=${domain}&path=%2Ftrojan-fengwhuut#${NAME}-CDN-TROJAN`;
   
   const subTxt = `${argoConfigs.vless}\n${argoConfigs.vmess}\n${argoConfigs.trojan}`;
   fs.writeFileSync(subFilePath, subTxt);
@@ -152,8 +152,8 @@ class HybridServer {
       const host = req.headers.host;
       const payload = {
         native: {
-          vless: `vless://${UUID}@${host}:443?encryption=none&security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Fvless-mediafairy#${NAME}-SNI-VLESS`,
-          trojan: `trojan://${UUID}@${host}:443?security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Ftrojan-mediafairy#${NAME}-SNI-TROJAN`
+          vless: `vless://${UUID}@${host}:443?encryption=none&security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Fvless-fengwhuut#${NAME}-SNI-VLESS`,
+          trojan: `trojan://${UUID}@${host}:443?security=tls&sni=${host}&fp=firefox&type=ws&host=${host}&path=%2Ftrojan-fengwhuut#${NAME}-SNI-TROJAN`
         },
         argo: {
           vless: argoConfigs.vless || 'Menunggu Cloudflare Argo Tunnel aktif...',
@@ -463,9 +463,9 @@ class HybridServer {
               </div>
             </div>
             <div class="footer">
-              <a href="https://t.me/MediafairyCH" target="_blank" rel="noopener" class="support-link">
+              <a href="https://t.me/fengwhuutCH" target="_blank" rel="noopener" class="support-link">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75l-2.2-1.45c-.95-.63-.33-.98.21-1.55l.85-.85c.09-.09.17-.17.17-.34l-2.14-1.64c-.23-.18-.39-.28-.39-.56 0-.28.2-.43.5-.57l3.4-1.29c1.02-.42 1.69-.66 1.95-.84.26-.18.33-.42.33-.67a.9.9 0 0 0-.02-.2c-.05-.26-.26-.4-.52-.4-.9-.08-1.94.6-3.06 1.4-.42.3-.8.45-1.14.45-.5 0-1.1-.4-1.6-.9-.7-.7-.9-1.2-.3-1.6.6-.4 1.8-.5 2.9-1 1.1-.5 2.1-1 4.4-.9.4 0 .9.2 1.1.6.2.4.2 1 .1 1.8z" fill="currentColor"/></svg>
-                Technical Support — MediaFairy
+                Technical Support — fengwhuut
               </a>
             </div>
           </div>
@@ -550,7 +550,7 @@ class HybridServer {
   async handleWebSocketConnection(ws, request) {
     try {
       const path = url.parse(request.url, true).pathname;
-      if (path === '/vless-mediafairy' || path === '/trojan-mediafairy' || path === '/vmess-mediafairy') {
+      if (path === '/vless-fengwhuut' || path === '/trojan-fengwhuut' || path === '/vmess-fengwhuut') {
         return await this.websocketHandler(ws);
       }
       ws.close(1000, "Invalid Path");
